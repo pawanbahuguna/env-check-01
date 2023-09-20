@@ -26,6 +26,8 @@ jobs:
         docker build . --file Dockerfile --tag pb/${{ github.event.inputs.image }}:7
         docker images
         docker save pb/${{ github.event.inputs.image }}:7 | gzip > ${{ github.event.inputs.image }}.tar.gz
+        ls
+        md5sum ${{ github.event.inputs.image }}.tar.gz
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v3
       with:
