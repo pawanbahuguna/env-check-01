@@ -24,6 +24,7 @@ jobs:
         cd ${{ github.event.inputs.image }}
         docker build . --file Dockerfile --tag pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }}
         docker images
+        mkdir test
         docker save pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} | gzip > test/${{ github.event.inputs.image }}.tar.gz
         ls test
         md5sum ${{ github.event.inputs.image }}.tar.gz
