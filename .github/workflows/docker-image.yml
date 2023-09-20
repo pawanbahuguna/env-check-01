@@ -25,20 +25,20 @@ jobs:
       run: |
         echo ---- Building Docker Image ----
         cd $DOCKER_IMAGE
-        docker build . --file Dockerfile --tag pb/$DOCKER_IMAGE:$TAGS
+        docker build . --file Dockerfile --tag pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }}
         docker images
-        docker save pb/$DOCKER_IMAGE:$TAGS | gzip > $DOCKER_IMAGE.tar.gz
+        docker save pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} | gzip > ${{ github.event.inputs.image }}.tar.gz
         ls
         md5sum $DOCKER_IMAGE.tar.gz
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v3
       with:
         name: my-artifact
-        path: $DOCKER_IMAGE.tar.gz
+        path: ${{ github.event.inputs.image }}.tar.gz
         retention-days: 5
-      env:
-        DOCKER_IMAGE: ${{ github.event.inputs.image }}
-        TAGS: ${{ github.event.inputs.tags }}
+      # env:
+      #   DOCKER_IMAGE: ${{ github.event.inputs.image }}
+      #   TAG: ${{ github.event.inputs.tag }}
       
    
   deploy:
