@@ -22,17 +22,17 @@ jobs:
       run: |
         echo ---- Building Docker Image ${{ github.event.inputs.image }}  ----
         cd ${{ github.event.inputs.image }}
-        docker build . --file Dockerfile --tag pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }}
+        docker build -t ${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} .
         docker images
-        mkdir test
-        docker save pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} | gzip > test/${{ github.event.inputs.image }}.tar.gz
-        ls test
-        md5sum test/${{ github.event.inputs.image }}.tar.gz
+        # mkdir test
+        docker save ${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} | gzip > ${{ github.event.inputs.image }}.tar.gz
+        pwd
+        md5sum ${{ github.event.inputs.image }}.tar.gz
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v3
       with:
         name: artifact
-        path: test/${{ github.event.inputs.image }}.tar.gz
+        path: ${{ github.event.inputs.image }}.tar.gz
         if-no-files-found: error
         retention-days: 5
       # env:
