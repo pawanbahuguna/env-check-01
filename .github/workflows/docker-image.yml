@@ -27,7 +27,7 @@ jobs:
         cd $DOCKER_IMAGE
         docker build . --file Dockerfile --tag pb/$DOCKER_IMAGE:$TAGS
         docker images
-        docker save pb/$DOCKER_IMAGE:7 | gzip > $DOCKER_IMAGE.tar.gz
+        docker save pb/$DOCKER_IMAGE:$TAGS | gzip > $DOCKER_IMAGE.tar.gz
         ls
         md5sum $DOCKER_IMAGE.tar.gz
     - name: 'Upload Artifact'
@@ -37,8 +37,8 @@ jobs:
         path: $DOCKER_IMAGE.tar.gz
         retention-days: 5
       env:
-        DOCKER_IMAGE: ${{ inputs.image }}
-        TAGS: ${{ inputs.tags }}
+        DOCKER_IMAGE: ${{ github.event.inputs.image }}
+        TAGS: ${{ github.event.inputs.tags }}
       
    
   deploy:
