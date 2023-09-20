@@ -20,15 +20,25 @@ jobs:
         echo ---- Building Docker Image ----
         docker build . --file Dockerfile --tag my-image-name:7
         docker images
-
+        docker save my-image-name:7 | gzip > myimage.tar.gz
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v3
+      with:
+        name: my-image
+        path: myimage.tar.gz
+        retention-days: 5
+   
   deploy:
     needs: build
     runs-on: ubuntu-latest
     environment: production
     steps:
+    - name: Download a Docker Image Tar
+      uses: actions/download-artifact@v3
+      with:
+       name: my-image    
     - name: Deploy to S3
       run: |
-        echo ---- Building Docker Image ----
-        docker save my-image-name:7 | gzip > myimage.tar.gz
         ls
+        echo ---- Send tar to S3 ----
     
