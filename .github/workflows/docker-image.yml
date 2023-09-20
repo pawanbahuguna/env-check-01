@@ -24,9 +24,11 @@ jobs:
         cd ${{ github.event.inputs.image }}
         docker build -t ${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} .
         docker images
-    - name: Tar and checksum        
+    - name: Tar and checksum
+      run: |
         docker save ${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} | gzip > ${{ github.event.inputs.image }}.tar.gz
         pwd
+        ls
         md5sum ${{ github.event.inputs.image }}.tar.gz
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v3
