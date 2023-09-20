@@ -32,7 +32,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: my-image
-        path: test/${{ github.event.inputs.image }}.tar.gz
+        path: ~/test/${{ github.event.inputs.image }}.tar.gz
         #path: java.tar.gz
         retention-days: 5
       # env:
@@ -48,7 +48,7 @@ jobs:
     - name: Download a Docker Image Tar
       uses: actions/download-artifact@v3
       with:
-       name: my-imag   
+       name: my-image
     - name: Deploy to S3
       run: |
         ls
