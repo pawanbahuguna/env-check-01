@@ -6,8 +6,10 @@ on:
       image:
         description: Which Image to build (Example - java, python)
         required: true
-      version:
-        description: Enter the Version
+      tag:
+        description: Enter the Tag, default is 7
+        type: string
+        default: '7'
         required: false
 
 jobs:
@@ -22,18 +24,22 @@ jobs:
     - name: Build the Docker image
       run: |
         echo ---- Building Docker Image ----
-        cd ${{ github.event.inputs.image }}
-        docker build . --file Dockerfile --tag pb/${{ github.event.inputs.image }}:7
+        cd $DOCKER_IMAGE
+        docker build . --file Dockerfile --tag pb/$DOCKER_IMAGE:$TAGS
         docker images
-        docker save pb/${{ github.event.inputs.image }}:7 | gzip > ${{ github.event.inputs.image }}.tar.gz
+        docker save pb/$DOCKER_IMAGE:7 | gzip > $DOCKER_IMAGE.tar.gz
         ls
-        md5sum ${{ github.event.inputs.image }}.tar.gz
+        md5sum $DOCKER_IMAGE.tar.gz
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v3
       with:
         name: my-artifact
-        path: ${{ github.event.inputs.image }}.tar.gz
+        path: $DOCKER_IMAGE.tar.gz
         retention-days: 5
+      env:
+        DOCKER_IMAGE: ${{ inputs.image }}
+        TAGS: ${{ inputs.tags }}
+      
    
   deploy:
     needs: build
