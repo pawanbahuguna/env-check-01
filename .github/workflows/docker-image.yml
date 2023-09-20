@@ -32,7 +32,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: artifact
-        path: ${{ github.event.inputs.image }}.tar.gz
+        path: ~/${{ github.event.inputs.image }}/${{ github.event.inputs.image }}.tar.gz
         if-no-files-found: error
         retention-days: 5
       # env:
@@ -40,17 +40,17 @@ jobs:
       #   TAG: ${{ github.event.inputs.tag }}
       
    
-  # deploy:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   environment: production
-  #   steps:
-  #   # - name: Download a Docker Image Tar
-  #   #   uses: actions/download-artifact@v3
-  #   #   with:
-  #   #    name: artifact
-  #   - name: Deploy to S3
-  #     run: |
-  #       ls
-  #       echo ---- Send tar to S3 ----
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+    - name: Download a Docker Image Tar
+      uses: actions/download-artifact@v3
+      with:
+       name: artifact
+    - name: Deploy to S3
+      run: |
+        ls
+        echo ---- Send tar to S3 ----
     
