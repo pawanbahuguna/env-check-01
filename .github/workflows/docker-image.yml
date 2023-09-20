@@ -28,12 +28,12 @@ jobs:
         docker save pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} | gzip > test/${{ github.event.inputs.image }}.tar.gz
         ls test
         md5sum test/${{ github.event.inputs.image }}.tar.gz
-    - name: 'Upload Artifact'
-      uses: actions/upload-artifact@v3
-      with:
-        name: my-image
-        path: ~/test/*
-        retention-days: 5
+    # - name: 'Upload Artifact'
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: my-image
+    #     path: ~/test/*
+    #     retention-days: 5
       # env:
       #   DOCKER_IMAGE: ${{ github.event.inputs.image }}
       #   TAG: ${{ github.event.inputs.tag }}
@@ -44,10 +44,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-    - name: Download a Docker Image Tar
-      uses: actions/download-artifact@v3
-      with:
-       name: my-image
+    # - name: Download a Docker Image Tar
+    #   uses: actions/download-artifact@v3
+    #   with:
+    #    name: my-image
     - name: Deploy to S3
       run: |
         ls
