@@ -15,10 +15,7 @@ on:
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
-    #environment: production
-
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
@@ -27,15 +24,15 @@ jobs:
         cd ${{ github.event.inputs.image }}
         docker build . --file Dockerfile --tag pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }}
         docker images
-        docker save pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} | gzip > ${{ github.event.inputs.image }}.tar.gz
-        ls
+        docker save pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} | gzip > test/${{ github.event.inputs.image }}.tar.gz
+        ls test
         md5sum ${{ github.event.inputs.image }}.tar.gz
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v3
       with:
-        name: my-artifact
-        #path: ${{ github.event.inputs.image }}.tar.gz
-        path: java.tar.gz
+        name: my-image
+        path: test/${{ github.event.inputs.image }}.tar.gz
+        #path: java.tar.gz
         retention-days: 5
       # env:
       #   DOCKER_IMAGE: ${{ github.event.inputs.image }}
@@ -50,7 +47,7 @@ jobs:
     - name: Download a Docker Image Tar
       uses: actions/download-artifact@v3
       with:
-       name: my-artifact   
+       name: my-imag   
     - name: Deploy to S3
       run: |
         ls
