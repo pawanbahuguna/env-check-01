@@ -32,7 +32,8 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: artifact
-        path: ~/${{ github.event.inputs.image }}/${{ github.event.inputs.image }}.tar.gz
+        #path: ~/${{ github.event.inputs.image }}/${{ github.event.inputs.image }}.tar.gz
+        path: /home/runner/work/env-check-01/env-check-01/${{ github.event.inputs.image }}/${{ github.event.inputs.image }}.tar.gz
         if-no-files-found: error
         retention-days: 5
       # env:
