@@ -31,7 +31,7 @@ jobs:
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ github.event.inputs.image }}
+        name: my-artifact
         path: ${{ github.event.inputs.image }}.tar.gz
         retention-days: 5
    
@@ -43,7 +43,7 @@ jobs:
     - name: Download a Docker Image Tar
       uses: actions/download-artifact@v3
       with:
-       name: ${{ github.event.inputs.image }}    
+       name: my-artifact   
     - name: Deploy to S3
       run: |
         ls
