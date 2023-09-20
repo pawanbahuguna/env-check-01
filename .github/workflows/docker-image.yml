@@ -28,28 +28,29 @@ jobs:
         docker save pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} | gzip > test/${{ github.event.inputs.image }}.tar.gz
         ls test
         md5sum test/${{ github.event.inputs.image }}.tar.gz
-    # - name: 'Upload Artifact'
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: my-image
-    #     path: ~/test/*
-    #     retention-days: 5
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v3
+      with:
+        name: artifact
+        path: test/${{ github.event.inputs.image }}.tar.gz
+        if-no-files-found: error
+        retention-days: 5
       # env:
       #   DOCKER_IMAGE: ${{ github.event.inputs.image }}
       #   TAG: ${{ github.event.inputs.tag }}
       
    
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-    # - name: Download a Docker Image Tar
-    #   uses: actions/download-artifact@v3
-    #   with:
-    #    name: my-image
-    - name: Deploy to S3
-      run: |
-        ls
-        echo ---- Send tar to S3 ----
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   environment: production
+  #   steps:
+  #   # - name: Download a Docker Image Tar
+  #   #   uses: actions/download-artifact@v3
+  #   #   with:
+  #   #    name: artifact
+  #   - name: Deploy to S3
+  #     run: |
+  #       ls
+  #       echo ---- Send tar to S3 ----
     
