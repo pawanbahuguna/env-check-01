@@ -1,10 +1,14 @@
 name: Docker Image CI
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      image:
+        description: Which Image to build (Example - java, python)
+        required: true
+      version:
+        description: Enter the Version
+        required: false
 
 jobs:
 
@@ -18,14 +22,15 @@ jobs:
     - name: Build the Docker image
       run: |
         echo ---- Building Docker Image ----
-        docker build . --file Dockerfile --tag my-image-name:7
+        cd ${{ github.event.inputs.image }}
+        docker build . --file Dockerfile --tag pb/${{ github.event.inputs.image }}:7
         docker images
-        docker save my-image-name:7 | gzip > myimage.tar.gz
+        docker save pb/${{ github.event.inputs.image }}:7 | gzip > ${{ github.event.inputs.image }}.tar.gz
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v3
       with:
-        name: my-image
-        path: myimage.tar.gz
+        name: ${{ github.event.inputs.image }}
+        path: ${{ github.event.inputs.image }}.tar.gz
         retention-days: 5
    
   deploy:
@@ -36,7 +41,7 @@ jobs:
     - name: Download a Docker Image Tar
       uses: actions/download-artifact@v3
       with:
-       name: my-image    
+       name: ${{ github.event.inputs.image }}    
     - name: Deploy to S3
       run: |
         ls
