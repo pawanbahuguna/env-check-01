@@ -29,7 +29,7 @@ jobs:
         docker images
         docker save pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} | gzip > ${{ github.event.inputs.image }}.tar.gz
         ls
-        md5sum $DOCKER_IMAGE.tar.gz
+        md5sum ${{ github.event.inputs.image }}.tar.gz
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v3
       with:
