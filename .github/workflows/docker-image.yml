@@ -32,8 +32,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: my-image
-        path: ~/test/${{ github.event.inputs.image }}.tar.gz
-        #path: java.tar.gz
+        path: ~/test/*
         retention-days: 5
       # env:
       #   DOCKER_IMAGE: ${{ github.event.inputs.image }}
