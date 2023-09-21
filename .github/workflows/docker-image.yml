@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       image:
-        description: Which Image to build (Example - java, python)
+        description: Image to build (Example - java, python)
         required: true
       tag:
         description: Enter the Tag, default is 7
