@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       image:
-        description: Which Image to build (Example - java, python)
+        description: Which Image to build (Example - java, python, lein, hydrant)
         required: true
       tag:
         description: Enter the Tag, default is 7
@@ -19,9 +19,33 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image ${{ github.event.inputs.image }}
+      # check for the input and build related image from the base image Ubuntu
+      if: "${{ github.event.inputs.image }} == 'java' ||  ${{ github.event.inputs.image }} == 'python' ||  ${{ github.event.inputs.image }} == 'php-fpm' "
       run: |
         echo ---- Building Docker Image ${{ github.event.inputs.image }}  ----
         cd ${{ github.event.inputs.image }}
+        docker build -t pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} .
+        docker images
+    - name: Build the Docker image ${{ github.event.inputs.image }}
+      # check for the input and build related image from the base image Ubuntu
+      if: "${{ github.event.inputs.image }} == 'lein' "
+      run: |
+        echo ---- Building Docker Image ${{ github.event.inputs.image }}  ----
+        cd java
+        docker build -t pb/java:latest .
+        cd ..//${{ github.event.inputs.image }}
+        docker build -t pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} .
+        docker images
+    - name: Build the Docker image ${{ github.event.inputs.image }}
+    # check for the input and build related image from the base image Ubuntu
+      if: "${{ github.event.inputs.image }} == 'hydrant' "
+      run: |
+        echo ---- Building Docker Image ${{ github.event.inputs.image }}  ----
+        cd java
+        docker build -t pb/java:latest .
+        cd ..//lein
+        docker build -t pb/lein:latest .
+        cd ..//${{ github.event.inputs.image }}
         docker build -t pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} .
         docker images
     - name: Tar and checksum
