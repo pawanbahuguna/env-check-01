@@ -32,7 +32,9 @@ jobs:
       run: |
         echo ---- Building Docker Image ${{ github.event.inputs.image }}  ----
         cd java
-        docker build -t pb/java:latest .
+        echo ----- Building Java Image ------
+        docker build -t pb/java:${{ github.event.inputs.tag }} .
+        docker tag pb/java:${{ github.event.inputs.tag }} pb/java:latest
         cd ..//${{ github.event.inputs.image }}
         docker build -t pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} .
         docker images
@@ -42,7 +44,9 @@ jobs:
       run: |
         echo ---- Building Docker Image ${{ github.event.inputs.image }}  ----
         cd java
-        docker build -t pb/java:latest .
+        echo ----- Building Java Image ------
+        docker build -t pb/java:${{ github.event.inputs.tag }} .
+        docker tag pb/java:${{ github.event.inputs.tag }} pb/java:latest
         cd ..//lein
         docker build -t pb/lein:latest .
         cd ..//${{ github.event.inputs.image }}
