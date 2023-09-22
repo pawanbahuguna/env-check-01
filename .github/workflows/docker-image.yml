@@ -4,13 +4,16 @@ on:
   workflow_dispatch:
     inputs:
       image:
-        description: Which Image to build (Example - java, python, lein, hydrant)
+        description: Image to build (Example - java, python, lein, hydrant)
         required: true
       tag:
         description: Enter the Tag, default is 7
         type: string
         default: '7'
         required: false
+      version:
+        description: Image version to put in Tar (example - v1, 2.3, 10.0.1 )
+        required: true
 
 jobs:
 
@@ -18,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Docker image ${{ github.event.inputs.image }}
+    - name: Build the Docker image - Java, Python, php-fpm
       id: base_image_build
       # check for the input and build related image from the base image Ubuntu
       if: |
@@ -30,7 +33,7 @@ jobs:
         cd ${{ github.event.inputs.image }}
         docker build -t pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} .
         docker images
-    - name: Build the Docker image ${{ github.event.inputs.image }}
+    - name: Build the Docker image lein
       id: lein_image_build
       # check for the input and build related image from the base image Ubuntu
       if: github.event.inputs.image == 'lein'
@@ -40,10 +43,12 @@ jobs:
         echo ----- Building Java Image ------
         docker build -t pb/java:${{ github.event.inputs.tag }} .
         docker tag pb/java:${{ github.event.inputs.tag }} pb/java:latest
+        echo ----- Building ${{ github.event.inputs.image }} Image ------
         cd ..//${{ github.event.inputs.image }}
         docker build -t pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} .
+        docker tag pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} pb/${{ github.event.inputs.image }}:latest
         docker images
-    - name: Build the Docker image ${{ github.event.inputs.image }}
+    - name: Build the Docker image hydrant
       id: hydrant_image_build
     # check for the input and build related image from the base image Ubuntu
       if: github.event.inputs.image == 'hydrant'
@@ -53,22 +58,25 @@ jobs:
         echo ----- Building Java Image ------
         docker build -t pb/java:${{ github.event.inputs.tag }} .
         docker tag pb/java:${{ github.event.inputs.tag }} pb/java:latest
+        echo ----- Building lein Image ------
         cd ..//lein
         docker build -t pb/lein:latest .
+        echo ----- Building ${{ github.event.inputs.image }} Image ------
         cd ..//${{ github.event.inputs.image }}
         docker build -t pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} .
+        docker tag pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} pb/${{ github.event.inputs.image }}:latest
         docker images
     - name: Tar and checksum
       run: |
-        docker save pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} | gzip > ${{ github.event.inputs.image }}.tar.gz
+        docker save pb/${{ github.event.inputs.image }}:${{ github.event.inputs.tag }} | gzip > ${{ github.event.inputs.image }}.${{ github.event.inputs.version }}.tar.gz
         pwd
         ls
-        md5sum ${{ github.event.inputs.image }}.tar.gz
+        md5sum ${{ github.event.inputs.image }}.${{ github.event.inputs.version }}.tar.gz
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v3
       with:
         name: artifact
-        path: ${{ github.event.inputs.image }}.tar.gz
+        path: ${{ github.event.inputs.image }}.${{ github.event.inputs.version }}.tar.gz
         #path: ${{ github.workspace }}/${{ github.event.inputs.image }}/${{ github.event.inputs.image }}.tar.gz
         #path: /home/runner/work/env-check-01/env-check-01/${{ github.event.inputs.image }}/${{ github.event.inputs.image }}.tar.gz
         if-no-files-found: error
