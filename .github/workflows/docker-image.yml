@@ -6,6 +6,12 @@ on:
       image:
         description: Image to build (Example - java, python, lein, hydrant)
         required: true
+        type: choice
+        options:
+        - java
+        - python
+        - hydrant
+        - lein  
       tag:
         description: Enter the Tag, default is 7
         type: string
