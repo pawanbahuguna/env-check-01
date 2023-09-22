@@ -22,9 +22,9 @@ jobs:
       id: base_image_build
       # check for the input and build related image from the base image Ubuntu
       if: |
-         ${{ github.event.inputs.image }} == 'java' ||  
-         ${{ github.event.inputs.image }} == 'python' ||  
-         ${{ github.event.inputs.image }} == 'php-fpm'
+         github.event.inputs.image == 'java' ||  
+         github.event.inputs.image == 'python' ||  
+         github.event.inputs.image == 'php-fpm'
       run: |
         echo ---- Building Docker Image ${{ github.event.inputs.image }}  ----
         cd ${{ github.event.inputs.image }}
