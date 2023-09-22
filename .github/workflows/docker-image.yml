@@ -37,7 +37,8 @@ jobs:
     - name: Build the Docker image lein
       id: lein_image_build
       # check for the input and build related image from the base image Ubuntu
-      if: github.event.inputs.image == 'lein'
+      # if: github.event.inputs.image == 'lein'
+      if: contains(fromJSON('["lein"]'), github.event.inputs.image)
       run: |
         echo ---- Building Docker Image ${{ github.event.inputs.image }}  ----
         cd java
@@ -52,7 +53,8 @@ jobs:
     - name: Build the Docker image hydrant
       id: hydrant_image_build
     # check for the input and build related image from the base image Ubuntu
-      if: github.event.inputs.image == 'hydrant'
+      #if: github.event.inputs.image == 'hydrant'
+      if: contains(fromJSON('["hydrant"]'), github.event.inputs.image)
       run: |
         echo ---- Building Docker Image ${{ github.event.inputs.image }}  ----
         cd java
