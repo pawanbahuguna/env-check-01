@@ -1,0 +1,1 @@
+FROM pb/lein:latest
