@@ -107,5 +107,6 @@ jobs:
     - name: Deploy to S3
       run: |
         ls
+        docker images
         echo ---- Send tar to S3 ----
     
